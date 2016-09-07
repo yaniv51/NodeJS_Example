@@ -2,7 +2,7 @@
  * Created by Yaniv on 07/09/2016.
  */
 
-var server = require("./server");
+var server = require("./httpServer");
 var router = require("./router");
 var requestHandler = require("./requestHandler");
 
