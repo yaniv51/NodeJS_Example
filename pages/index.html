@@ -12,21 +12,21 @@
         var parameters;
         $.get( '/getFiles', parameters, function(data){
             getData = JSON.parse(data);
-            var images = $(".images");
-            var htmlText = '<table class=imageTable>';
+            var images = $(".images").children(".imageTable");
+            var htmlText = "";
 
             for(var i=0; i<getData.length; i++){
                 //add row for each 4 images
                 if(i%4 == 0){
                     htmlText += '<tr>'
                     if(i!=0)
-                        htmlText+= '<tr/>'
+                        htmlText+= '</tr>'
                 }
 
                 var localHtmlText = addImage(getData[i], i);
-                htmlText += '<td>'+localHtmlText+'<td/>';
+                htmlText += '<td>'+localHtmlText+'</td>';
             }
-            htmlText+= '<tr/>'
+            htmlText+= '</tr>'
             images.append(htmlText);
         });
     }
@@ -42,6 +42,15 @@
         return htmlText;
     }
 
+    function removeImages(){
+        var rows = $(".imageTable").rows;
+        for(var index = 0; index<row.length; index++)
+        {
+            var row = rows[index];
+            console.log(row);
+        }
+    }
+
 </script>
 
 <head>
@@ -50,10 +59,15 @@
 </head>
 <body>
     <div class="images">
+        <table class=imageTable>
+
+        </table>
 
     </div>
     <form id='uploadRedirect' action="/uploadPage" method="get">
         <input type="submit" value="Upload new files" />
     </form>
+    <button onclick="removeImages()" class="btn btn-primary">Remove selected</button>
+
 </body>
 </html>
