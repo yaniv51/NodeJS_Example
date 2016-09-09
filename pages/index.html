@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--script src="https://code.jquery.com/jquery-2.2.0.min.js"></script-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script>
+    function uploadImages(form){
+        console.log("hi");
+        console.log(form);
+    }
+
+    $( document ).ready(function() {
+        readFiles();
+    });
+
+    function readFiles(){
+        var getData;
+        var parameters;
+        $.get( '/getFiles', parameters, function(data){
+            console.log(data);
+            getData = JSON.parse(data);
+            for(var i=0; i<getData.length; i++){
+                addImage(getData[i], i);
+            }
+        });
+    }
+
+    function addImage(imageName, index){
+        var location =window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: '');
+        location += "/show?path="+imageName;
+        console.log(location);
+        var images = $(".images");
+        var htmlText = '<div class=image_block'+index+'>'+
+                '<img src='+location+' height="100" width="100"/>'+
+                '<input type=checkbox class='+ imageName+' />' +
+                '</div>';
+        images.append(htmlText);
+    }
+
+</script>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hello</title>
+</head>
+<body>
+    <div class="images">
+
+    </div>
+    <form id='uploadImageForm' action="/upload" enctype="multipart/form-data" method="post">
+        <input type="file" name="upload" multiple="multiple" accept="image/x-png, image/gif, image/jpeg">
+        <br/><br/><br/>
+        <input type="submit" value="Upload file" />
+    </form>
+</body>
+</html>

@@ -6,12 +6,12 @@ var server = require("./httpServer");
 var router = require("./router");
 var requestHandler = require("./requestHandler");
 
-// #24
-
+//add route function for any request
 var handle = {};
 handle["/"] = requestHandler.start;
 handle["/start"] = requestHandler.start;
 handle["/upload"] = requestHandler.upload;
 handle["/show"] = requestHandler.show;
+handle["/getFiles"] = requestHandler.getFiles;
 
 server.start(router.route, handle);
