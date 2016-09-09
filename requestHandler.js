@@ -18,6 +18,16 @@ function start(response, request) {
     writeResponseHtmlPath(response, htmlPath);
 }
 
+
+function uploadPage(response){
+    console.log("Request handler: 'uploadPage' was called");
+
+    //redirect to upload page
+    var htmlPath = __dirname + "/pages/uploadPage.html";
+    writeResponseHtmlPath(response, htmlPath);
+}
+
+
 function upload(response, request){
     console.log("Request handler: 'upload' was called");
 
@@ -155,3 +165,4 @@ exports.start = start;
 exports.upload = upload;
 exports.show = show;
 exports.getFiles = getFiles;
+exports.uploadPage = uploadPage;

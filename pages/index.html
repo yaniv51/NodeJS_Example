@@ -1,14 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!--script src="https://code.jquery.com/jquery-2.2.0.min.js"></script-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script>
-    function uploadImages(form){
-        console.log("hi");
-        console.log(form);
-    }
-
     $( document ).ready(function() {
         readFiles();
     });
@@ -17,24 +11,35 @@
         var getData;
         var parameters;
         $.get( '/getFiles', parameters, function(data){
-            console.log(data);
             getData = JSON.parse(data);
+            var images = $(".images");
+            var htmlText = '<table class=imageTable>';
+
             for(var i=0; i<getData.length; i++){
-                addImage(getData[i], i);
+                //add row for each 4 images
+                if(i%4 == 0){
+                    htmlText += '<tr>'
+                    if(i!=0)
+                        htmlText+= '<tr/>'
+                }
+
+                var localHtmlText = addImage(getData[i], i);
+                htmlText += '<td>'+localHtmlText+'<td/>';
             }
+            htmlText+= '<tr/>'
+            images.append(htmlText);
         });
     }
 
     function addImage(imageName, index){
         var location =window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: '');
         location += "/show?path="+imageName;
-        console.log(location);
-        var images = $(".images");
+
         var htmlText = '<div class=image_block'+index+'>'+
-                '<img src='+location+' height="100" width="100"/>'+
+                '<img src='+location+' height="120" width="120"/>'+
                 '<input type=checkbox class='+ imageName+' />' +
                 '</div>';
-        images.append(htmlText);
+        return htmlText;
     }
 
 </script>
@@ -47,10 +52,8 @@
     <div class="images">
 
     </div>
-    <form id='uploadImageForm' action="/upload" enctype="multipart/form-data" method="post">
-        <input type="file" name="upload" multiple="multiple" accept="image/x-png, image/gif, image/jpeg">
-        <br/><br/><br/>
-        <input type="submit" value="Upload file" />
+    <form id='uploadRedirect' action="/uploadPage" method="get">
+        <input type="submit" value="Upload new files" />
     </form>
 </body>
 </html>
