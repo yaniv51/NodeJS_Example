@@ -1,18 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!--script src="https://code.jquery.com/jquery-2.2.0.min.js"></script-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 
 <head>
     <meta charset="UTF-8">
     <title>Upload images page</title>
+    <script>
+        $(document).ready(
+                function(){
+                    $('input:file').change(
+                            function(){
+                                if ($(this).val()) {
+                                    $('input:submit').attr('disabled',false);
+                                }else
+                                {
+                                    $('input:submit').attr('disabled',true);
+                                }
+                            }
+                    );
+                });
+
+    </script>
 </head>
 <body>
     Please select files<br/>
-<form id='uploadImageForm' action="/upload" enctype="multipart/form-data" method="post">
-    <input type="file" name="upload" multiple="multiple" accept="image/x-png, image/gif, image/jpeg">
-    <br/><br/><br/>
-    <input type="submit" value="Upload file" />
+    <form id='uploadImageForm' action="/upload" enctype="multipart/form-data" method="post">
+        <input type="file" name="upload" id="fileInput" multiple="multiple" accept="image/x-png, image/gif, image/jpeg" />
+        <br/><br/>
+        <input type="submit" value="Upload files" disabled />
+    </form>
+    <div id="result"></div>
 </form>
 </body>
 </html>

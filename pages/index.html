@@ -9,6 +9,14 @@
         readFiles();
     });
 
+    function imageThumbHover(item){
+        item.style.opacity=0.5
+    }
+
+    function  imageThumbMouseLeave(item){
+        item.style.opacity=1;
+    }
+
     function readFiles(){
         var getData;
         var parameters;
@@ -38,20 +46,13 @@
         var location =window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: '');
         location += "/show?path="+imageName;
 
-        var htmlText = '<div class=image_block'+index+'>'+
-                    '<a class=zoom href=#>' +
-                    '<img class=thumb src='+location+' height="120" width="120"/>'+
-                    '<img class=full src='+location+ ' height=75% width=75%/>' +
-                        '</a>' +
-                '<input type=checkbox id='+ imageName+' />' +
+        var htmlText = '<div class=image_block>'+
+                '<div id=imageThumb tag=' + imageName +'>' +
+                    '<img class=img onmouseover=imageThumbHover(this) onmouseout=imageThumbMouseLeave(this) src='+ location + ' id=' + imageName + '/>'+
+                '</div>' +
+                '<input type=checkbox class=check1 id='+ imageName+' />' +
                 '</div>';
 
-
-
-        /*var htmlText = '<div class=image_block'+index+'>'+
-                '<img src='+location+' height="120" width="120"/>'+
-                '<input type=checkbox id='+ imageName+' />' +
-                '</div>';*/
         return htmlText;
     }
 
@@ -85,9 +86,20 @@
     <title>Index</title>
 
     <style>
-        a.zoom .full { display: none; }
-        a.zoom:active .thumb { display: none; }
-        a.zoom:active .full { display: inline; }
+        #imageThumb {
+            width: 140px;
+            height: 140px;
+            display: block;
+            background: black;
+            z-index: 3000;
+        }
+        .img{
+            width: 140px;
+            height: 140px;
+            z-index: 3001;
+            position: absolute;
+        }
+
     </style>
 
 </head>
