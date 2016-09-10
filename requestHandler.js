@@ -8,8 +8,9 @@ var querystring = require("querystring"),
     util = require('util'),
     formidable = require("formidable");
 
-var imageDirectory = __dirname + "/tmp/";
+var imageDirectory = __dirname + "/uploadDirectory/";
 var pagesDirectory = __dirname +"/pages/";
+var internalDirectory = __dirname+"/internalImages/";
 
 function start(response, request) {
     console.log("Request handler: 'start' was called");
@@ -107,7 +108,7 @@ function show(response, request){
         writeImageResponse(response, imagePath);
     }
     else{
-        writeImageResponse(response, __dirname+"/internalImages/null.png")
+        writeImageResponse(response, internalDirectory + "null.png");
     }
 }
 
