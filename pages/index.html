@@ -39,9 +39,19 @@
         location += "/show?path="+imageName;
 
         var htmlText = '<div class=image_block'+index+'>'+
-                '<img src='+location+' height="120" width="120"/>'+
+                    '<a class=zoom href=#>' +
+                    '<img class=thumb src='+location+' height="120" width="120"/>'+
+                    '<img class=full src='+location+ ' height=75% width=75%/>' +
+                        '</a>' +
                 '<input type=checkbox id='+ imageName+' />' +
                 '</div>';
+
+
+
+        /*var htmlText = '<div class=image_block'+index+'>'+
+                '<img src='+location+' height="120" width="120"/>'+
+                '<input type=checkbox id='+ imageName+' />' +
+                '</div>';*/
         return htmlText;
     }
 
@@ -72,7 +82,14 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Hello</title>
+    <title>Index</title>
+
+    <style>
+        a.zoom .full { display: none; }
+        a.zoom:active .thumb { display: none; }
+        a.zoom:active .full { display: inline; }
+    </style>
+
 </head>
 <body>
     <div class="images">
