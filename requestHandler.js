@@ -1,8 +1,6 @@
 /**
  * Created by Yaniv on 07/09/2016.
  */
-
-var exec = require("child_process").exec;
 var querystring = require("querystring"),
     fs = require("fs"),
     url = require("url");
@@ -10,23 +8,24 @@ var querystring = require("querystring"),
     util = require('util'),
     formidable = require("formidable");
 
+var imageDirectory = __dirname + "/tmp/";
+var pagesDirectory = __dirname +"/pages/";
+
 function start(response, request) {
     console.log("Request handler: 'start' was called");
 
     //redirect to index page
-    var htmlPath = __dirname + "/pages/index.html";
+    var htmlPath = pagesDirectory + "index.html";
     writeResponseHtmlPath(response, htmlPath);
 }
-
 
 function uploadPage(response){
     console.log("Request handler: 'uploadPage' was called");
 
     //redirect to upload page
-    var htmlPath = __dirname + "/pages/uploadPage.html";
+    var htmlPath = pagesDirectory + "uploadPage.html";
     writeResponseHtmlPath(response, htmlPath);
 }
-
 
 function upload(response, request){
     console.log("Request handler: 'upload' was called");
@@ -69,10 +68,10 @@ function upload(response, request){
                 files += "<br/>";
             files += currentName;
 
-            fs.rename(currentPath, __dirname + "/tmp/" +currentName, function(error){
+            fs.rename(currentPath, imageDirectory +currentName, function(error){
                 if(error){
-                    fs.unlink(__dirname + "/tmp/" + currentName);
-                    fs.rename(files.upload.path, __dirname + "/tmp/" + currentName);
+                    fs.unlink(imageDirectory + currentName);
+                    fs.rename(files.upload.path, imageDirectory + currentName);
                 }
             })
         }
@@ -102,7 +101,7 @@ function show(response, request){
     var imageName = querystring.parse(query)["path"];
 
     console.log("Request handle 'show' was called for image: " + imageName);
-    var imagePath = __dirname + "/tmp/" + imageName;
+    var imagePath = imageDirectory + imageName;
 
     if(fs.existsSync(imagePath)){
         writeImageResponse(response, imagePath);
@@ -112,12 +111,48 @@ function show(response, request){
     }
 }
 
-function getFiles(response){
-    var path = __dirname + "/tmp/";
-    fs.readdir(path, function(err, files){
+function getFiles(response, request){
+    fs.readdir(imageDirectory, function(err, files){
         response.write(JSON.stringify(files));
         response.end();
     })
+}
+
+function removeImages(response, request) {
+    console.log("Request handle 'remove images' was called");
+
+    var query = url.parse(request.url).query;
+    var imageNames = querystring.parse(query)["names"];
+    imageNames = JSON.parse(imageNames);
+    if(imageNames === undefined || imageNames.length < 1){
+        writeResponseText(response, "Nothing to remove");
+        return;
+    }
+
+    asyncRemoveImages(response, imageNames, 0, []);
+}
+
+function asyncRemoveImages(response, images, itemNumber, removed){
+    console.log("start remove: item #"+itemNumber);
+    if(itemNumber >= images.length){
+        writeResponseText(response, JSON.stringify(removed));
+        return;
+    }
+
+    var imageName = images[itemNumber];
+    var imagePath = imageDirectory +imageName;
+
+    if(fs.existsSync(imagePath)){
+        fs.unlink(imagePath,function(err){
+            if(!err){
+                removed.push(imageName);
+                console.log(imageName + " has been removed");
+            }else{
+                console.log("Error while remove image: "+imageName)
+            }
+            asyncRemoveImages(response, images, itemNumber+1, removed);
+        });
+    }
 }
 
 function writeImageResponse(response, path){
@@ -128,13 +163,6 @@ function writeImageResponse(response, path){
 function writeResponseText(response, content){
     response.writeHead(200, {"Content-type" : "text/plain"});
     response.write(content);
-    response.end();
-}
-
-function writeResponseShowImage(response){
-    response.writeHead(200, {"Content-Type": "text/html"});
-    response.write("received image:<br/>");
-    response.write("<img src='/show' />");
     response.end();
 }
 
@@ -166,3 +194,4 @@ exports.upload = upload;
 exports.show = show;
 exports.getFiles = getFiles;
 exports.uploadPage = uploadPage;
+exports.removeImages = removeImages;

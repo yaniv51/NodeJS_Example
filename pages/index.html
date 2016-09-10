@@ -3,6 +3,8 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <script>
+    var imageNames;
+
     $( document ).ready(function() {
         readFiles();
     });
@@ -12,6 +14,7 @@
         var parameters;
         $.get( '/getFiles', parameters, function(data){
             getData = JSON.parse(data);
+            imageNames = getData;
             var images = $(".images").children(".imageTable");
             var htmlText = "";
 
@@ -37,18 +40,32 @@
 
         var htmlText = '<div class=image_block'+index+'>'+
                 '<img src='+location+' height="120" width="120"/>'+
-                '<input type=checkbox class='+ imageName+' />' +
+                '<input type=checkbox id='+ imageName+' />' +
                 '</div>';
         return htmlText;
     }
 
     function removeImages(){
-        var rows = $(".imageTable").rows;
-        for(var index = 0; index<row.length; index++)
-        {
-            var row = rows[index];
-            console.log(row);
+        var index;
+        var toDelete = [];
+        var item;
+
+        for(index = 0; index<imageNames.length; index++){
+            item = document.getElementById(imageNames[index]);
+            if(item.checked)
+                toDelete.push(imageNames[index]);
         }
+        if(toDelete.length < 1){
+            alert("Nothing to remove!");
+            return;
+        }
+
+        $.get("/removeImages?names=" + JSON.stringify(toDelete), {}, function(result){
+            var deletedFiles = JSON.parse(result);
+            alert("Total "+ deletedFiles.length +  (deletedFiles.length == 1? " file has" : " files have") + " been removed: "+result );
+            window.location.reload();
+        });
+
     }
 
 </script>

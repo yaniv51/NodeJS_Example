@@ -14,5 +14,6 @@ handle["/upload"] = requestHandler.upload;
 handle["/show"] = requestHandler.show;
 handle["/getFiles"] = requestHandler.getFiles;
 handle["/uploadPage"] = requestHandler.uploadPage;
+handle["/removeImages"] = requestHandler.removeImages;
 
 server.start(router.route, handle);
