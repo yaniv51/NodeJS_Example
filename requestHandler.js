@@ -6,7 +6,7 @@ var querystring = require("querystring"),
     url = require("url");
     pathModule = require("path"),
     util = require('util'),
-    formidable = require("formidable");
+    formidable = require("./modules/formidable");
 
 var imageDirectory = __dirname + "/uploadDirectory/";
 var pagesDirectory = __dirname +"/pages/";
